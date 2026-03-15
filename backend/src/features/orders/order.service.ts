@@ -171,8 +171,9 @@ export const getMyOrdersService = async (consumerId: string): Promise<any[]> => 
 
     return fullOrders;
 };
-export const getStoreOrdersService = async (userId: string): Promise<Order[]> => {
-    const query = `
+
+export const getStoreOrdersService = async (userId: string): Promise<any[]> => {
+    const ordersQuery = `
     SELECT
       o.id,
       o.consumerid AS "consumerId",
@@ -186,48 +187,47 @@ export const getStoreOrdersService = async (userId: string): Promise<Order[]> =>
     ORDER BY o.createdat DESC
   `;
 
-    const result = await pool.query(query, [userId]);
-    return result.rows;
-};
+    const ordersResult = await pool.query(ordersQuery, [userId]);
+    const orders = ordersResult.rows;
 
-export const getAvailableOrdersService = async (): Promise<Order[]> => {
-    const query = `
-    SELECT
-      id,
-      consumerid AS "consumerId",
-      storeid AS "storeId",
-      deliveryid AS "deliveryId",
-      createdat AS "createdAt",
-      status
-    FROM orders
-    WHERE status = $1
-      AND deliveryid IS NULL
-    ORDER BY createdat DESC
-  `;
+    const fullOrders = [];
 
-    const result = await pool.query(query, [OrderStatus.PENDING]);
-    return result.rows;
-};
+    for (const order of orders) {
+        const itemsQuery = `
+      SELECT
+        oi.id,
+        oi.orderid AS "orderId",
+        oi.productid AS "productId",
+        oi.quantity,
+        p.id AS "productRealId",
+        p.name AS "productName",
+        p.price AS "productPrice"
+      FROM order_items oi
+      INNER JOIN products p ON oi.productid = p.id
+      WHERE oi.orderid = $1
+    `;
 
-export const getAcceptedOrdersService = async (
-    deliveryId: string
-): Promise<Order[]> => {
-    const query = `
-    SELECT
-      id,
-      consumerid AS "consumerId",
-      storeid AS "storeId",
-      deliveryid AS "deliveryId",
-      createdat AS "createdAt",
-      status
-    FROM orders
-    WHERE deliveryid = $1
-      AND status = $2
-    ORDER BY createdat DESC
-  `;
+        const itemsResult = await pool.query(itemsQuery, [order.id]);
 
-    const result = await pool.query(query, [deliveryId, OrderStatus.ACCEPTED]);
-    return result.rows;
+        const orderItems = itemsResult.rows.map((item) => ({
+            id: item.id,
+            orderId: item.orderId,
+            productId: item.productId,
+            quantity: item.quantity,
+            products: {
+                id: item.productRealId,
+                name: item.productName,
+                price: item.productPrice,
+            },
+        }));
+
+        fullOrders.push({
+            ...order,
+            order_items: orderItems,
+        });
+    }
+
+    return fullOrders;
 };
 
 export const getOrderByIdService = async (orderId: string): Promise<Order> => {
