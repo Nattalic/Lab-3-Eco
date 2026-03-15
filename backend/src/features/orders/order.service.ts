@@ -230,6 +230,46 @@ export const getStoreOrdersService = async (userId: string): Promise<any[]> => {
     return fullOrders;
 };
 
+export const getAvailableOrdersService = async (): Promise<Order[]> => {
+    const query = `
+    SELECT
+      id,
+      consumerid AS "consumerId",
+      storeid AS "storeId",
+      deliveryid AS "deliveryId",
+      createdat AS "createdAt",
+      status
+    FROM orders
+    WHERE status = $1
+      AND deliveryid IS NULL
+    ORDER BY createdat DESC
+  `;
+
+    const result = await pool.query(query, [OrderStatus.PENDING]);
+    return result.rows;
+};
+
+export const getAcceptedOrdersService = async (
+    deliveryId: string
+): Promise<Order[]> => {
+    const query = `
+    SELECT
+      id,
+      consumerid AS "consumerId",
+      storeid AS "storeId",
+      deliveryid AS "deliveryId",
+      createdat AS "createdAt",
+      status
+    FROM orders
+    WHERE deliveryid = $1
+      AND status = $2
+    ORDER BY createdat DESC
+  `;
+
+    const result = await pool.query(query, [deliveryId, OrderStatus.ACCEPTED]);
+    return result.rows;
+};
+
 export const getOrderByIdService = async (orderId: string): Promise<Order> => {
     const query = `
     SELECT
