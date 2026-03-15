@@ -85,14 +85,14 @@ function App() {
               onClick={() => handleSelectRole('store')}
               className="w-full rounded-2xl bg-white border border-gray-200 px-5 py-4 text-gray-800 font-semibold hover:bg-gray-50 transition"
             >
-              Ir a tienda
+              Entrar como tienda
             </button>
 
             <button
               onClick={() => handleSelectRole('delivery')}
               className="w-full rounded-2xl bg-white border border-gray-200 px-5 py-4 text-gray-800 font-semibold hover:bg-gray-50 transition"
             >
-              Ir a repartidor
+              Entrar como repartidor
             </button>
           </div>
         </div>

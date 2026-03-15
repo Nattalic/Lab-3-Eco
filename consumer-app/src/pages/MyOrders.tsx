@@ -35,12 +35,10 @@ export default function MyOrders({ user }: { user: User }) {
 
   const statusColor: Record<string, string> = {
     pending: 'bg-yellow-100 text-yellow-700',
-    accepted: 'bg-blue-100 text-blue-700',
-    delivered: 'bg-green-100 text-green-700',
+    accepted: 'bg-green-100 text-green-700',
     declined: 'bg-red-100 text-red-700',
     PENDING: 'bg-yellow-100 text-yellow-700',
-    ACCEPTED: 'bg-blue-100 text-blue-700',
-    DELIVERED: 'bg-green-100 text-green-700',
+    ACCEPTED: 'bg-green-100 text-green-700',
     DECLINED: 'bg-red-100 text-red-700',
   };
 

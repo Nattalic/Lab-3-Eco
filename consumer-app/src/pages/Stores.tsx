@@ -248,7 +248,7 @@ export default function Stores({ user }: { user: User }) {
 
         <section className="bg-white border border-orange-100 rounded-3xl p-5 shadow-sm">
           {!selectedStore ? (
-            <div className="h-full min-h-[320px] flex items-center justify-center text-center">
+            <div className="h-full min-h-80 flex items-center justify-center text-center">
               <div>
                 <p className="text-lg font-semibold text-gray-700 mb-2">Productos</p>
                 <p className="text-sm text-gray-400">
@@ -314,7 +314,7 @@ export default function Stores({ user }: { user: User }) {
           <p className="text-sm text-gray-500 mb-5">Revisa tu pedido antes de enviarlo</p>
 
           {cart.length === 0 ? (
-            <div className="min-h-[320px] flex items-center justify-center text-center">
+            <div className="min-h-80] flex items-center justify-center text-center">
               <p className="text-sm text-gray-400">Tu carrito está vacío</p>
             </div>
           ) : (
