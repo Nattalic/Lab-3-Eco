@@ -463,5 +463,19 @@ export const declineOrderService = async (orderId: string): Promise<Order> => {
         throw Boom.badRequest('Order is no longer available :(');
     }
 
-    return order;
+    const query = `
+    UPDATE orders
+    SET status = $1
+    WHERE id = $2
+    RETURNING
+      id,
+      consumerid AS "consumerId",
+      storeid AS "storeId",
+      deliveryid AS "deliveryId",
+      createdat AS "createdAt",
+      status
+  `;
+
+    const result = await pool.query(query, [OrderStatus.DECLINED, orderId]);
+    return result.rows[0];
 };

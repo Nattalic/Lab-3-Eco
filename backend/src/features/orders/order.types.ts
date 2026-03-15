@@ -1,6 +1,7 @@
 export enum OrderStatus {
     PENDING = 'pending',
     ACCEPTED = 'accepted',
+    DECLINED = 'declined',
 }
 
 //tabla order
